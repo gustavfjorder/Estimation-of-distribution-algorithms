@@ -12,11 +12,12 @@ class TSP:
         f.close()
 
         # Fill fields
-        self.name = x[0].split()[1]
-        self.type = x[1].split()[1]
-        self.comment = " ".join(x[2].split()[1:])
-        self.dim = int(x[3].split()[1])
-        self.edge_weight_type = x[4].split()[1]
+
+        self.name = x[0].replace(":","").split()[1]
+        self.type = x[1].replace(":","").split()[1]
+        self.comment = " ".join(x[2].replace(":","").split()[1:])
+        self.dim = int(x[3].replace(":","").split()[1])
+        self.edge_weight_type = x[4].replace(":","").split()[1]
 
         # Create list of nodes
         # Each node is represented by a list of the format [CityIndex, x-coordinate, y-coordinate]

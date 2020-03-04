@@ -11,7 +11,7 @@ TSPInstance = TSP.TSP()
 TSPInstance = TSPInstance.loadProblem("TSP_instances/berlin52.txt")
 
 # Optmize
-bestSolution, bestDistance = SwitchTwo.optimize(TSPInstance,1000)
+bestSolution, bestDistance = SwitchTwo.optimize(TSPInstance,100000)
 print("Best solution:",bestSolution)
 print("Best distance:",bestDistance)
 
