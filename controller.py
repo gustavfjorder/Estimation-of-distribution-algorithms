@@ -1,5 +1,5 @@
 import TSP
-import randomized
+from Algorithms import SwitchTwo
 import visualization
 import time
 
@@ -11,7 +11,7 @@ TSPInstance = TSP.TSP()
 TSPInstance = TSPInstance.loadProblem("TSP_instances/berlin52.txt")
 
 # Optmize
-bestSolution, bestDistance = randomized.optimize(TSPInstance,1000000)
+bestSolution, bestDistance = SwitchTwo.optimize(TSPInstance,1000)
 print("Best solution:",bestSolution)
 print("Best distance:",bestDistance)
 
