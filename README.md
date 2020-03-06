@@ -2,6 +2,5 @@
 Implementation and Experimental analysis of Estimation of Distribution Algorithms (EDAs) for the Traveling Salesman Problem (TSP)
 
 Currently implemented algorithms:
-- EHBSA (Edge Histogram Based Sampling Algorithm)
-
-Change positions of two random cities
+- Switch positions of two cities at random (for testing purposes)
+- EHBSA - Edge Histogram Based Sampling Algorithm
