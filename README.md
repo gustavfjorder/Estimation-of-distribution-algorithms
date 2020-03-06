@@ -4,3 +4,7 @@ Implementation and Experimental analysis of Estimation of Distribution Algorithm
 Currently implemented algorithms:
 - Switch positions of two cities at random (for testing purposes)
 - EHBSA - Edge Histogram Based Sampling Algorithm
+
+
+TODO:
+- Implement EHBSA with template
