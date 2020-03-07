@@ -2,10 +2,21 @@ import random
 import copy
 import numpy as np
 
-def optimize(TSPinstance,maxIterations,N):
-    # Number of individuals in population
-    # N = 1
+def optimize(TSPinstance,maxIterations,N, NumberOfTemplateCuts = 0):
+    """Optimizes using EHBSA
     
+    Arguments:
+        TSPinstance {TSP} -- The instance of TSP for which a solution is needed
+        maxIterations {int} -- Number of iterations to run algorithm
+        N {int} -- Number of individuals in population
+    
+    Keyword Arguments:
+        NumberOfTemplateCuts {int} -- Number of cuts when running algorithm. Use 0 to get EHBSA/WO (default: {0})
+    
+    Returns:
+        Solution -- The best permutation found
+        Distance -- The length of the best tour found 
+    """
     # Length of solutions
     L = TSPinstance.dim
 
@@ -26,8 +37,12 @@ def optimize(TSPinstance,maxIterations,N):
 
     for _ in range(maxIterations):
         # Sample new individual
-        newIndividual = sampleNewIndividual(N,L,EHM)
-        
+        if NumberOfTemplateCuts <= 1:
+            newIndividual = sampleNewIndividual(N,L,EHM)
+        else:
+            randomIndividual = random.choice(individuals)
+            newIndividual = sampleNewIndividualWithTemplate(N,L,EHM,randomIndividual,NumberOfTemplateCuts)
+
         # Compare new individual to a random exisiting individual
         randomExisitingIndividual = random.randint(0,N-1)
         if TSPinstance.tourLength(newIndividual)<TSPinstance.tourLength(individuals[randomExisitingIndividual]):
@@ -116,10 +131,70 @@ def sampleNewIndividual(N,L,EHM):
 
     return newIndividual
 
+def sampleNewIndividualWithTemplate(N,L,EHM,randomIndividual,NumberOfTemplateCuts):
 
-# print(probDist)
-# print(probDistNormalized)
-# for i in range(1,L):
+    # Array to represent new individual
+    newIndividual = [city for city in randomIndividual]
 
+    # Pick random cut points
+    randomCutPoints = random.sample(range(L),NumberOfTemplateCuts)
+    # TODO remove this assertion because it takes O(n^2)
+    assert(all(randomCutPoints.count(x) == 1 for x in randomCutPoints))
+    # Pick random points among the cut points
+    startPoint = random.choice(randomCutPoints)
+    # Find next point which will be end point
+    endPoint = L
+    for num in randomCutPoints:
+        if num > startPoint and num < endPoint:
+            endPoint = num
+    if endPoint == L:
+        endPoint = startPoint
+        startPoint = min(randomCutPoints)
 
-# print(EHM)
+    rangeToMutate = list(range(startPoint,endPoint+1))
+    for index in rangeToMutate:
+        newIndividual[index] = -1
+
+    # randomly select initial element
+    newIndividual[startPoint] = randomIndividual[random.choice(rangeToMutate)]
+
+    # Create a copy of EHM in which we set values to 0 to simulate roulette wheel
+    EHM_RouletteWheel = copy.deepcopy(EHM)
+
+    for i in range(L):
+        for j in range(L):
+            if j not in rangeToMutate:
+                EHM_RouletteWheel[i][randomIndividual[j]] = 0
+    # print(EHM_RouletteWheel)
+    # Sample a new city
+    for i in range(startPoint+1,endPoint+1):
+
+        # Set probability of re-drawing previous city to 0 to avoid cycles
+        for usedIndex in range(L):
+            EHM_RouletteWheel[usedIndex][newIndividual[(i-1)%L]] = 0
+
+        # Normalize probabilities so we can select a new element
+        probDistSum = sum(EHM_RouletteWheel[newIndividual[(i-1)%L]])
+        probDistNormalized = [p/probDistSum if probDistSum>0 else 0 for p in EHM_RouletteWheel[newIndividual[(i-1)%L]]]
+
+        # Check that the sum of normalized probabilites is 1
+        # print(EHM_RouletteWheel)
+        if round(sum(probDistNormalized),3)!=1:
+            # print(i,EHM_RouletteWheel)
+            print("failed on",i,"with",sum(probDistNormalized))
+            print(rangeToMutate)
+            print(randomIndividual)
+            print(newIndividual)
+            print(randomIndividual[startPoint:endPoint])
+            print(newIndividual[startPoint:endPoint])
+        assert(round(sum(probDistNormalized),3)==1) 
+
+        # Draw new city
+        newIndividual[i] = random.choices(population = list(range(L)), weights = probDistNormalized,k=1)[0]
+        if newIndividual[i] in newIndividual[:i]:
+            print("goes wrong here")
+    if any(newIndividual.count(x)>1 for x in list(range(0,L))):
+        r = randomIndividual[startPoint:endPoint+1]
+        rnew = newIndividual[startPoint:endPoint+1]
+        print("somethings wrong here!")
+    return newIndividual
