@@ -1,4 +1,4 @@
-# EDAs_for_TSP
+# Implementation and Evaluation of Estimation of Distribution Algorithms in Combinatorial Optimization
 Implementation and Experimental analysis of Estimation of Distribution Algorithms (EDAs) for sorting and for the Traveling Salesman Problem (TSP)
 
 Currently implemented algorithms:
