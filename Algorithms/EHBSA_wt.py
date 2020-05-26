@@ -4,7 +4,7 @@ import numpy as np
 import Sorting
 import time
 
-def Run(ProblemType, ProblemInstance, N, NumberOfTemplateCuts = 0, maxTime=1, findIdentity=False, DistanceMeasure = None):
+def Run(ProblemType, ProblemInstance, N, NumberOfTemplateCuts = 0, maxTime=-1, findIdentity=False, DistanceMeasure = None):
     """Optimizes using EHBSA
     
     Arguments:
@@ -27,9 +27,6 @@ def Run(ProblemType, ProblemInstance, N, NumberOfTemplateCuts = 0, maxTime=1, fi
 
     # Start timer
     startTime = time.time()
-
-    # THIS FILE IS WITHOUT TEMPLATE SO SET TO 0
-    NumberOfTemplateCuts = 0
 
     # If no population size is given
     if N is None:
@@ -59,11 +56,10 @@ def Run(ProblemType, ProblemInstance, N, NumberOfTemplateCuts = 0, maxTime=1, fi
         # Sample new individual
         if NumberOfTemplateCuts <= 1:
             newIndividual = sampleNewIndividual(N,L,EHM)
-            # print("sample")
         else:
             randomIndividual = random.choice(individuals)
             newIndividual = sampleNewIndividualWithTemplate(N,L,EHM,randomIndividual,NumberOfTemplateCuts)
-        # print(newIndividual)
+        
         # Compare new individual to a random exisiting individual
         randomExisitingIndividual = random.randint(0,N-1)
         randomExisitingIndividual_fitness = individuals_fitness[randomExisitingIndividual]
@@ -73,24 +69,18 @@ def Run(ProblemType, ProblemInstance, N, NumberOfTemplateCuts = 0, maxTime=1, fi
             individuals[randomExisitingIndividual] = newIndividual.copy()
             individuals_fitness[randomExisitingIndividual] = new_individual_fitness
 
-            if time.time()-startTime >= maxTime:
-                canContinue = False
-                break
-
             # Recalculate EHM
             for i in range(L):
                 for j in range(L):
                     EHM[i][j] = e(i,j,epsilon,N,L,individuals)
 
-        if  time.time()-startTime >= maxTime:
+        if time.time()-startTime >= maxTime:
             canContinue = False
         if findIdentity and Sorting.IsIdentity(newIndividual):
             canContinue = False
 
 
-    if findIdentity:
-        return ProblemInstance.fitness_evaluations, time.time()-startTime
-    # print(time.time()-startTime)
+
     bestSolution_index = 0
     bestFitness = ProblemInstance.Fitness(DistanceMeasure, individuals[0])
     for individual_index in range(1,N):
@@ -99,6 +89,10 @@ def Run(ProblemType, ProblemInstance, N, NumberOfTemplateCuts = 0, maxTime=1, fi
             bestFitness = fitness
             bestSolution_index = individual_index
 
+    if findIdentity:
+        # print(individuals[bestSolution_index], bestFitness)
+        return ProblemInstance.fitness_evaluations, time.time()-startTime
+    
 
     return individuals[bestSolution_index], bestFitness
 

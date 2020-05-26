@@ -1,0 +1,13 @@
+NAME: test_small_5.tsp
+TYPE: TSP
+COMMENT: Odyssey of Ulysses (Groetschel/Padberg)
+DIMENSION: 5
+EDGE_WEIGHT_TYPE: GEO
+NODE_COORD_SECTION
+ 1 38.24 20.42
+ 2 39.57 26.15
+ 3 40.56 25.32
+ 4 36.26 23.12
+ 5 33.48 10.54
+EOF
+
