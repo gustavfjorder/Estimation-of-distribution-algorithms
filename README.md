@@ -1,10 +1,13 @@
 # EDAs_for_TSP
-Implementation and Experimental analysis of Estimation of Distribution Algorithms (EDAs) for the Traveling Salesman Problem (TSP)
+Implementation and Experimental analysis of Estimation of Distribution Algorithms (EDAs) for sorting and for the Traveling Salesman Problem (TSP)
 
 Currently implemented algorithms:
-- Switch positions of two cities at random (for testing purposes)
-- EHBSA without template - Edge Histogram Based Sampling Algorithm 
-- EHBSA with template - 
+- UMDA for permutations
+- (1+1)EA for permutations
+- EHBSA without template
+- EHBSA with template
+- Mallows Model
+- Generalized Mallows Model
 
 
-TODO:
+Use `RunTests.py` to run code.
